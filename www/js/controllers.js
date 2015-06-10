@@ -1,6 +1,46 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ["ionic", "ngCordova"])
 
-.controller('DashCtrl', function($scope) {})
+.controller("LoginController", function($scope, $cordovaOauth, $cordovaSQLite) {
+ 
+    $scope.FacebookLogin = function() {
+        $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
+            //$localStorage.accessToken = result.access_token;
+            //$location.path("/profile");
+        }, function(error) {
+            alert("There was a problem signing in!  See the console for logs");
+            console.log(error);
+        });
+    };
+
+
+    $scope.GoogleLogin = function() {
+        $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
+            //$localStorage.accessToken = result.access_token;
+            //$location.path("/profile");
+        }, function(error) {
+            alert("There was a problem signing in!  See the console for logs");
+            console.log(error);
+        });
+    };
+
+
+      var db = $cordovaSQLite.openDB({ name: "my.db" });
+
+      // for opening a background db:
+      var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
+
+      $scope.execute = function() {
+        var query = "INSERT INTO test_table (data, data_num) VALUES (?,?)";
+        $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
+          console.log("insertId: " + res.insertId);
+        }, function (err) {
+          console.error(err);
+        });
+      };
+
+
+ 
+})
 
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
