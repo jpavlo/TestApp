@@ -1,48 +1,20 @@
-angular.module('starter.controllers', ["ionic", "ngCordova"])
+var facebookApp = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage"]);
 
-.controller("LoginController", function($scope, $cordovaOauth, $cordovaSQLite) {
- 
-    $scope.FacebookLogin = function() {
+facebookApp.controller("LoginController", function($scope, $cordovaOauth, $localStorage, $location) {
+
+    $scope.login = function() {
         $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
-            //$localStorage.accessToken = result.access_token;
-            //$location.path("/profile");
+            $localStorage.accessToken = result.access_token;
+            $location.path("/tab/profile");
         }, function(error) {
             alert("There was a problem signing in!  See the console for logs");
             console.log(error);
         });
     };
 
+});
 
-    $scope.GoogleLogin = function() {
-        $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
-            //$localStorage.accessToken = result.access_token;
-            //$location.path("/profile");
-        }, function(error) {
-            alert("There was a problem signing in!  See the console for logs");
-            console.log(error);
-        });
-    };
-
-
-      var db = $cordovaSQLite.openDB({ name: "my.db" });
-
-      // for opening a background db:
-      var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
-
-      $scope.execute = function() {
-        var query = "INSERT INTO test_table (data, data_num) VALUES (?,?)";
-        $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
-          console.log("insertId: " + res.insertId);
-        }, function (err) {
-          console.error(err);
-        });
-      };
-
-
- 
-})
-
-.controller('ChatsCtrl', function($scope, Chats) {
+facebookApp.controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -55,9 +27,9 @@ angular.module('starter.controllers', ["ionic", "ngCordova"])
   $scope.remove = function(chat) {
     Chats.remove(chat);
   }
-})
+});
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+facebookApp.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
@@ -66,3 +38,45 @@ angular.module('starter.controllers', ["ionic", "ngCordova"])
     enableFriends: true
   };
 });
+
+
+facebookApp.controller("FeedController", function($scope, $http, $localStorage, $location) {
+
+    $scope.init = function() {
+        if($localStorage.hasOwnProperty("accessToken") === true) {
+            $http.get("https://graph.facebook.com/v2.2/me/feed", { params: { access_token: $localStorage.accessToken, format: "json" }}).then(function(result) {
+                $scope.feedData = result.data.data;
+                $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "picture", format: "json" }}).then(function(result) {
+                    $scope.feedData.myPicture = result.data.picture.data.url;
+                });
+            }, function(error) {
+                alert("There was a problem getting your profile.  Check the logs for details.");
+                console.log(error);
+            });
+        } else {
+            alert("Not signed in");
+            $location.path("/tab/login");
+        }
+    };
+
+});
+
+
+facebookApp.controller("ProfileController", function($scope, $http, $localStorage, $location) {
+
+    $scope.init = function() {
+        if($localStorage.hasOwnProperty("accessToken") === true) {
+            $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,relationship_status", format: "json" }}).then(function(result) {
+                $scope.profileData = result.data;
+            }, function(error) {
+                alert("There was a problem getting your profile.  Check the logs for details.");
+                console.log(error);
+            });
+        } else {
+            alert("Not signed in");
+            $location.path("/tab/login");
+        }
+    };
+
+});
+
