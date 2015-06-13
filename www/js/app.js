@@ -10,7 +10,8 @@ angular.module('starter', ['ionic',
   'starter.services', 
   'ngCordova', 
   'ngCordovaOauth',
-  'ngStorage'])
+  'ngStorage',
+  'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -89,6 +90,16 @@ angular.module('starter', ['ionic',
       'tab-firebase': {
         templateUrl: 'templates/tab-firebase.html',
         controller: 'FirebaseController'
+      }
+    }
+  })
+
+    .state('tab.stream', {
+    url: '/stream',
+    views: {
+      'tab-stream': {
+        templateUrl: 'templates/tab-stream.html',
+        controller: 'StreamController'
       }
     }
   });

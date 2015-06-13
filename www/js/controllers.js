@@ -1,4 +1,5 @@
-var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage"]);
+var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage", "firebase", "ngCordovaOauth"]);
+
 
 App.controller("LoginController", function($scope, $cordovaOauth, $localStorage, $location) {
 
@@ -126,6 +127,33 @@ App.controller("GoogleController", function($scope, $cordovaOauth) {
     }
 
 });
+
+
+
+
+
+
+App.controller("StreamController", function($scope, $cordovaOauth) {
+ 
+
+ 
+    $scope.login = function() {
+        
+        var ref = new Firebase("https://testsapp.firebaseIO.com");
+        ref.authWithOAuthPopup("facebook", function(error, authData) {
+          if (error) {
+            console.log("Login Failed!", error);
+          } else {
+            console.log("Authenticated successfully with payload:", authData);
+          }
+        });
+
+    }
+ 
+});
+
+
+
 
 
 
