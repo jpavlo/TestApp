@@ -1,7 +1,10 @@
-<ion-view view-title="Login">
+<ion-view view-title="Login" ng-controller="GoogleController">
   <ion-content class="padding">
     <button class="button icon-left ion-social-facebook button-block button-positive" ng-click="login()">
       Facebook Login
+    </button>
+    <button class="button icon-left ion-social-google button-block button-assertive" ng-click="googleLogin()">
+      Google Login
     </button>
   </ion-content>
 </ion-view>

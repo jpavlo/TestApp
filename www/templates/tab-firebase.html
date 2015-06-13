@@ -1,0 +1,38 @@
+<ion-view view-title="Firebase">
+  <ion-content class="padding">
+		<div class="list card" data-ng-repeat="image in imageList">
+
+		  <div class="item item-avatar">
+		    <img data-ng-src="{{image.player.avatar_url}}">
+		    <h2>{{image.player.name}}</h2>
+		    <p>{{image.created_at | date:'fullDate'}}</p>
+		  </div>
+
+		  <div class="item item-body">
+		    <img class="full-image" data-ng-src="{{image.image_teaser_url}}">
+		    <p ng-bind-html="image.description">
+		    </p>
+		    <p>
+		      <a href="#" class="subdued">{{image.likes_count}} Like</a>
+		      <a href="#" class="subdued">{{image.comments_count}} Comments</a>
+		    </p>
+		  </div>
+
+		  <div class="item tabs tabs-secondary tabs-icon-left">
+		    <a class="tab-item" href="#">
+		      <i class="icon ion-thumbsup"></i>
+		      Like
+		    </a>
+		    <a class="tab-item" href="#">
+		      <i class="icon ion-chatbox"></i>
+		      Comment
+		    </a>
+		    <a class="tab-item" target="_blank" data-ng-href="{{image.image_url}}">
+		      <i class="icon ion-ios-eye"></i>
+		      View
+		    </a>
+		  </div>
+
+		</div>
+  </ion-content>
+</ion-view>

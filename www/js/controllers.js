@@ -1,6 +1,6 @@
-var facebookApp = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage"]);
+var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage"]);
 
-facebookApp.controller("LoginController", function($scope, $cordovaOauth, $localStorage, $location) {
+App.controller("LoginController", function($scope, $cordovaOauth, $localStorage, $location) {
 
     $scope.login = function() {
         $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
@@ -14,7 +14,7 @@ facebookApp.controller("LoginController", function($scope, $cordovaOauth, $local
 
 });
 
-facebookApp.controller('ChatsCtrl', function($scope, Chats) {
+App.controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -29,7 +29,7 @@ facebookApp.controller('ChatsCtrl', function($scope, Chats) {
   }
 });
 
-facebookApp.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+App.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
@@ -40,7 +40,7 @@ facebookApp.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
 });
 
 
-facebookApp.controller("FeedController", function($scope, $http, $localStorage, $location) {
+App.controller("FeedController", function($scope, $http, $localStorage, $location) {
 
     $scope.init = function() {
         if($localStorage.hasOwnProperty("accessToken") === true) {
@@ -62,7 +62,7 @@ facebookApp.controller("FeedController", function($scope, $http, $localStorage, 
 });
 
 
-facebookApp.controller("ProfileController", function($scope, $http, $localStorage, $location) {
+App.controller("ProfileController", function($scope, $http, $localStorage, $location) {
 
     $scope.init = function() {
         if($localStorage.hasOwnProperty("accessToken") === true) {
@@ -79,4 +79,54 @@ facebookApp.controller("ProfileController", function($scope, $http, $localStorag
     };
 
 });
+
+
+App.controller('FirebaseController', function($scope, $state, $http, $q) { 
+  
+  $scope.init = function(){
+    $scope.getImages()
+    .then(function(res){
+      //success
+      console.log('Images: ', res)
+      $scope.imageList = res.shots;
+    }, function(status){
+      //status
+      //console.log('Error: ', err)
+      $scope.pageError = status;
+    })
+  }
+
+  $scope.getImages = function(){
+    var defer = $q.defer();
+
+      $http.jsonp('http://api.dribbble.com/shots/popular?callback=JSON_CALLBACK')
+      .success(function(res){
+        defer.resolve(res)
+      })
+      .error(function(status, err){
+        defer.reject(status)
+      })    
+
+    return defer.promise;
+  }
+
+  $scope.init();
+
+});
+
+
+App.controller("GoogleController", function($scope, $cordovaOauth) {
+
+    $scope.googleLogin = function() {
+        $cordovaOauth.google("AIzaSyAgVVzf2e4pDU1OkL_TIcqqR4PkyA4ejqY", ["https://www.googleapis.com/auth/urlshortener", "https://www.googleapis.com/auth/userinfo.email"]).then(function(result) {
+            console.log(JSON.stringify(result));
+        }, function(error) {
+            console.log(error);
+        });
+    }
+
+});
+
+
+
 

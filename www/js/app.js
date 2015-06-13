@@ -81,6 +81,16 @@ angular.module('starter', ['ionic',
         controller: 'ProfileController'
       }
     }
+  })
+
+    .state('tab.firebase', {
+    url: '/firebase',
+    views: {
+      'tab-firebase': {
+        templateUrl: 'templates/tab-firebase.html',
+        controller: 'FirebaseController'
+      }
+    }
   });
 
   // if none of the above states are matched, use this as the fallback
