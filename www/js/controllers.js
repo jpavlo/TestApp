@@ -1,66 +1,44 @@
-var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage", "firebase", "ngCordovaOauth"]);
+var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage", "firebase"]);
 
 
-App.controller("LoginController", function($scope, $cordovaOauth, $localStorage, $location) {
+App.controller("LoginController", function($scope, $rootScope, $firebase, $firebaseSimpleLogin) {
+    // Get a reference to the Firebase
+    // TODO: Replace "ionic-demo" below with the name of your own Firebase
+    var firebaseRef = new Firebase("https://logtest.firebaseIO.com/");
 
-    $scope.login = function() {
-        $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
-            $localStorage.accessToken = result.access_token;
-            $location.path("/tab/profile");
-        }, function(error) {
-            alert("There was a problem signing in!  See the console for logs");
-            console.log(error);
-        });
+    // Create a Firebase Simple Login object
+    $scope.auth = $firebaseSimpleLogin(firebaseRef);
+
+    // Initially set no user to be logged in
+    $scope.user = null;
+
+    // Logs a user in with inputted provider
+    $scope.login = function(provider) {
+      $scope.auth.$login(provider);
     };
 
-});
-
-App.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-  
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
-});
-
-App.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
-
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
-
-
-App.controller("FeedController", function($scope, $http, $localStorage, $location) {
-
-    $scope.init = function() {
-        if($localStorage.hasOwnProperty("accessToken") === true) {
-            $http.get("https://graph.facebook.com/v2.2/me/feed", { params: { access_token: $localStorage.accessToken, format: "json" }}).then(function(result) {
-                $scope.feedData = result.data.data;
-                $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "picture", format: "json" }}).then(function(result) {
-                    $scope.feedData.myPicture = result.data.picture.data.url;
-                });
-            }, function(error) {
-                alert("There was a problem getting your profile.  Check the logs for details.");
-                console.log(error);
-            });
-        } else {
-            alert("Not signed in");
-            $location.path("/tab/login");
-        }
+    // Logs a user out
+    $scope.logout = function() {
+      $scope.auth.$logout();
     };
 
+    // Upon successful login, set the user object
+    $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
+      $scope.user = user;
+    });
+
+    // Upon successful logout, reset the user object
+    $rootScope.$on("$firebaseSimpleLogin:logout", function(event) {
+      $scope.user = null;
+    });
+
+    // Log any login-related errors to the console
+    $rootScope.$on("$firebaseSimpleLogin:error", function(event, error) {
+      console.log("Error logging user in: ", error);
+    });
 });
+
+
 
 
 App.controller("ProfileController", function($scope, $http, $localStorage, $location) {
@@ -82,7 +60,7 @@ App.controller("ProfileController", function($scope, $http, $localStorage, $loca
 });
 
 
-App.controller('FirebaseController', function($scope, $state, $http, $q) { 
+App.controller('RestfulController', function($scope, $state, $http, $q) { 
   
   $scope.init = function(){
     $scope.getImages()
@@ -128,29 +106,28 @@ App.controller("GoogleController", function($scope, $cordovaOauth) {
 
 });
 
-
-
-
-
-
-App.controller("StreamController", function($scope, $cordovaOauth) {
- 
-
- 
-    $scope.login = function() {
-        
-        var ref = new Firebase("https://testsapp.firebaseIO.com");
-        ref.authWithOAuthPopup("facebook", function(error, authData) {
-          if (error) {
-            console.log("Login Failed!", error);
-          } else {
-            console.log("Authenticated successfully with payload:", authData);
-          }
-        });
-
-    }
- 
+App.factory("Items", function($firebaseArray) {
+  var itemsRef = new Firebase("https://testsapp.firebaseIO.com/items");
+  return $firebaseArray(itemsRef);
 });
+
+
+
+
+App.controller("StreamController", function($scope, Items) {
+
+  $scope.items = Items;
+
+  $scope.addItem = function() {
+    var name = prompt("What do you need to buy?");
+    if (name) {
+      $scope.items.$add({
+        "name": name
+      });
+    }
+  };
+});
+
 
 
 

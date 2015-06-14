@@ -55,24 +55,6 @@ angular.module('starter', ['ionic',
     }
   })
 
-  .state('tab.feeds', {
-      url: '/feeds',
-      views: {
-        'tab-feeds': {
-          templateUrl: 'templates/tab-feeds.html',
-          controller: 'FeedController'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
 
   .state('tab.profile', {
     url: '/profile',
@@ -84,12 +66,12 @@ angular.module('starter', ['ionic',
     }
   })
 
-    .state('tab.firebase', {
-    url: '/firebase',
+    .state('tab.restful', {
+    url: '/restful',
     views: {
-      'tab-firebase': {
-        templateUrl: 'templates/tab-firebase.html',
-        controller: 'FirebaseController'
+      'tab-restful': {
+        templateUrl: 'templates/tab-restful.html',
+        controller: 'RestfulController'
       }
     }
   })
