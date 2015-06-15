@@ -1,25 +1,62 @@
 <ion-view title="Profile" ng-init="init()">
     <ion-content>
 
-<div class="item item-input-inset">
-    <label class="item-input-wrapper">
-      <input type="text" placeholder="Name" ng-model="formInfo.nameInput">
-    </label>
-    <button class="button button-small" ng-click="addItem()">
-      Submit
-    </button>
-  </div>
-  {{formInfo.nameInput}}
-<h1 class="title">Items</h1>
-      <button class="button button-icon ion-plus" >
-      </button>
-
-  <ion-list>
-    <ion-item ng-repeat="item in items">
-      {{item.name}}
-    </ion-item>
-  </ion-list>
+      <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" placeholder="Name" ng-model="nameInput">
+          </label>
+          <button class="button button-small" ng-click="addItem(nameInput)">
+            Submit
+          </button>
+      </div>
 
 
+      <div class="list card" ng-repeat="card in cards | orderBy:'-created_at'">
+
+        <div class="item item-avatar">
+          <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+          <h2>{{card.name}}</h2>
+          <p>{{card.created_at | date:'fullDate'}}</p>
+        </div>
+
+        <div class="item item-body">
+          <img class="full-image" src="http://ionicframework.com/img/docs/delorean.jpg">
+          <p>
+            This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+            the content is from a card-body consisting of an image and paragraph text. The footer
+            consists of tabs, icons aligned left, within the card-footer.
+          </p>
+          <p>
+            <a href="#" class="subdued">1 Like</a>
+            <a href="#" class="subdued">5 Comments</a>
+          </p>
+        </div>
+
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item" href="#">
+            <i class="icon ion-thumbsup"></i>
+            Like
+          </a>
+          <a class="tab-item" href="#">
+            <i class="icon ion-chatbox"></i>
+            Comment
+          </a>
+          <a class="tab-item" href="#">
+            <i class="icon ion-share"></i>
+            Share
+          </a>
+        </div>
+
+      <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" placeholder="Comment" ng-model="commentInput">
+          </label>
+          <button class="button button-small" ng-click="addComment(idCard = '{{card.$id}}', commentInput)">
+            Comment
+          </button>
+      </div>
+
+     
+      </div>
     </ion-content>
 </ion-view>

@@ -121,27 +121,76 @@ App.controller("GoogleController", function($scope, $cordovaOauth) {
 });
 
 App.factory("Items", function($firebaseArray) {
-  var itemsRef = new Firebase("https://testsapp.firebaseIO.com/items");
+  var itemsRef = new Firebase("https://testsapp.firebaseIO.com/cards");
   return $firebaseArray(itemsRef);
 });
 
 
+App.factory("Comments", function($firebaseArray) {
+  var itemsRef = new Firebase("https://testsapp.firebaseIO.com/comments");
+  return $firebaseArray(itemsRef);
+});
+
+App.controller("StreamController", function($scope, $timeout, Items, Comments) {
 
 
-App.controller("StreamController", function($scope, Items) {
+  $scope.nameInput = "";
+  $scope.idCard = "";
 
-  $scope.items = Items;
+  $scope.cards = Items;
 
-  $scope.addItem = function() {
-    $scope.formInfo = {};
-    alert($scope.formInfo.nameInput);
-    console.log($scope.formInfo.nameInput);
-    if (name) {
-      $scope.items.$add({
-        "name": name
-      });
-    }
+  $scope.comments = Comments;
+
+  // $scope.created_at = new Date().getTime();
+  
+
+  
+
+  // $scope.addItem = function(nameInput) {
+  //   if (nameInput) {
+  //     console.log(Items);
+  //     $scope.items.$add({created_at: $scope.created_at, 
+  //                        name: nameInput});
+  //   }
+  //   $scope.nameInput = "";
+  // };
+
+  // $scope.addComment = function(idInput, commentInput) {
+  //   if (commentInput) {
+  //     $scope.items.$add({created_at: $scope.created_at, 
+  //                        from_id: idInput,
+  //                        comment: commentInput});
+  //   }
+  //   $scope.commentInput = "";
+  // };
+
+
+
+  //$scope.myData = new Firebase("https://testsapp.firebaseIO.com/cards");
+
+  $scope.addItem = function (nameInput){
+    $scope.cards.$add(
+        {
+          name: nameInput,
+          created_at: new Date().getTime()
+        }
+      );
   };
+
+
+  $scope.addComment = function (idCard, commentInput){
+    $scope.comments.$add(
+        {
+          id: idCard,
+          comment: commentInput,
+          created_at: new Date().getTime()
+        }
+      );
+    $scope.commentInput = '';
+  };
+
+
+
 });
 
 
