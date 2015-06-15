@@ -1,9 +1,17 @@
 <ion-view title="Profile" ng-init="init()">
     <ion-content>
 
-
+<div class="item item-input-inset">
+    <label class="item-input-wrapper">
+      <input type="text" placeholder="Name" ng-model="formInfo.nameInput">
+    </label>
+    <button class="button button-small" ng-click="addItem()">
+      Submit
+    </button>
+  </div>
+  {{formInfo.nameInput}}
 <h1 class="title">Items</h1>
-      <button class="button button-icon ion-plus" ng-click="addItem()">
+      <button class="button button-icon ion-plus" >
       </button>
 
   <ion-list>
@@ -11,6 +19,7 @@
       {{item.name}}
     </ion-item>
   </ion-list>
+
 
     </ion-content>
 </ion-view>
