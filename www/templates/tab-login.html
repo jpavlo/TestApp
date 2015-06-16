@@ -1,6 +1,18 @@
-<ion-view view-title="Login" ng-controller="GoogleController">
-  <ion-content class="padding">
+<ion-modal-view ng-controller="LoginController">
+  <ion-header-bar>
+    <h1 class="title">Login</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
     <!-- Buttons -->
     <button class="button button-full button-positive" ng-click="facebookLogin()">Login with Facebook</button>
+    <button class="button button-full button-outline button-assertive" ng-click="facebookLogout()">Logout</button>
+    <!-- Logged-in user text -->
+    <div class="card">
+      <div class="item item-text-wrap" ng-hide="{{profileData.id}}">User not logged in</div>
+      <div class="item item-text-wrap" ng-bind="{{profileData.id}}">{{profileData.id}}</div>
+    </div>
   </ion-content>
-</ion-view>
+</ion-modal-view>

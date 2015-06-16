@@ -1,55 +1,41 @@
 var App = angular.module('starter.controllers', ["ionic", "ngCordova", "ngStorage", "firebase"]);
 
 
-// App.controller("LoginController", function($scope, $rootScope, $firebase, $firebaseSimpleLogin) {
-//     // Get a reference to the Firebase
-//     // TODO: Replace "ionic-demo" below with the name of your own Firebase
-//     var firebaseRef = new Firebase("https://logtest.firebaseIO.com/");
 
-//     // Create a Firebase Simple Login object
-//     $scope.auth = $firebaseSimpleLogin(firebaseRef);
-
-//     // Initially set no user to be logged in
-//     $scope.user = null;
-
-//     // Logs a user in with inputted provider
-//     $scope.login = function(provider) {
-//       $scope.auth.$login(provider);
-//     };
-
-//     // Logs a user out
-//     $scope.logout = function() {
-//       $scope.auth.$logout();
-//     };
-
-//     // Upon successful login, set the user object
-//     $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
-//       $scope.user = user;
-//     });
-
-//     // Upon successful logout, reset the user object
-//     $rootScope.$on("$firebaseSimpleLogin:logout", function(event) {
-//       $scope.user = null;
-//     });
-
-//     // Log any login-related errors to the console
-//     $rootScope.$on("$firebaseSimpleLogin:error", function(event, error) {
-//       console.log("Error logging user in: ", error);
-//     });
-// });
+App.controller('LoginController', function($scope, $cordovaOauth, $http, $localStorage, $location) {
 
 
-App.controller('LoginController', function($scope, $cordovaOauth, $localStorage, $location) {
 
-    $scope.facebookLogin = function() {
-        $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
-            $localStorage.accessToken = result.access_token;
-            $location.path("/tab/login");
-        }, function(error) {
-            alert("There was a problem signing in!  See the console for logs");
-            console.log(error);
-        });
+
+    $scope.facebookLogout = function() {
+        $localStorage.remove("accessToken");
+        $scope.modal.hide();
     };
+
+      $scope.facebookLogin = function() {
+
+            if($localStorage.hasOwnProperty("accessToken") === true) {
+                $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,email", format: "json" }}).then(function(result) {
+                    $scope.profileData = result.data;
+                    console.log("TAG success login " + JSON.stringify($scope.profileData));
+                    //$location.path("/templates/tab-login");
+                    $scope.modal.hide();
+                }, function(error) {
+                    alert("There was a problem getting your profile.  Check the logs for details.");
+                    console.log(error);
+                });
+            } else {
+                $cordovaOauth.facebook("397501760439627", ["email", "read_stream", "user_website", "user_location", "user_relationships"]).then(function(result) {
+                    $localStorage.accessToken = result.access_token;
+                    //console.log("TAG: Result " + JSON.stringify(result));
+                    //$location.path("/tab/profile");
+                }, function(error) {
+                    alert("There was a problem signing in!  See the console for logs");
+                    console.log(error);
+                });
+            }
+      };
+
 
 });
 
@@ -59,8 +45,9 @@ App.controller("ProfileController", function($scope, $http, $localStorage, $loca
 
     $scope.init = function() {
         if($localStorage.hasOwnProperty("accessToken") === true) {
-            $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,relationship_status", format: "json" }}).then(function(result) {
+            $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,email", format: "json" }}).then(function(result) {
                 $scope.profileData = result.data;
+                console.log(JSON.stringify($scope.profileData));
             }, function(error) {
                 alert("There was a problem getting your profile.  Check the logs for details.");
                 console.log(error);
@@ -74,9 +61,48 @@ App.controller("ProfileController", function($scope, $http, $localStorage, $loca
 });
 
 
-App.controller('RestfulController', function($scope, $state, $http, $q) { 
+App.controller('RestfulController', function($scope, $state, $http, $q, $ionicModal, $timeout) { 
+
+
+
+  // Form data for the login modal
+  $scope.loginData = {};
+
+  // Create the login modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/tab-login.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  // Triggered in the login modal to close it
+  $scope.closeLogin = function() {
+    $scope.modal.hide();
+  };
+
+  // Open the login modal
+  $scope.login = function() {
+    $scope.modal.show();
+  };
+
+  // Perform the login action when the user submits the login form
+  $scope.doLogin = function() {
+    console.log('Doing login', $scope.loginData);
+
+    // Simulate a login delay. Remove this and replace with your login
+    // code if using a login system
+    $timeout(function() {
+      $scope.closeLogin();
+    }, 1000);
+  };
+
+
+
+
+
   
   $scope.init = function(){
+
     $scope.getImages()
     .then(function(res){
       //success
@@ -87,7 +113,7 @@ App.controller('RestfulController', function($scope, $state, $http, $q) {
       //console.log('Error: ', err)
       $scope.pageError = status;
     })
-  }
+  };
 
   $scope.getImages = function(){
     var defer = $q.defer();
@@ -99,9 +125,9 @@ App.controller('RestfulController', function($scope, $state, $http, $q) {
       .error(function(status, err){
         defer.reject(status)
       })    
-
     return defer.promise;
-  }
+  };
+
 
   $scope.init();
 
@@ -131,42 +157,12 @@ App.factory("Comments", function($firebaseArray) {
   return $firebaseArray(itemsRef);
 });
 
+
 App.controller("StreamController", function($scope, $timeout, Items, Comments) {
-
-
   $scope.nameInput = "";
   $scope.idCard = "";
-
   $scope.cards = Items;
-
   $scope.comments = Comments;
-
-  // $scope.created_at = new Date().getTime();
-  
-
-  
-
-  // $scope.addItem = function(nameInput) {
-  //   if (nameInput) {
-  //     console.log(Items);
-  //     $scope.items.$add({created_at: $scope.created_at, 
-  //                        name: nameInput});
-  //   }
-  //   $scope.nameInput = "";
-  // };
-
-  // $scope.addComment = function(idInput, commentInput) {
-  //   if (commentInput) {
-  //     $scope.items.$add({created_at: $scope.created_at, 
-  //                        from_id: idInput,
-  //                        comment: commentInput});
-  //   }
-  //   $scope.commentInput = "";
-  // };
-
-
-
-  //$scope.myData = new Firebase("https://testsapp.firebaseIO.com/cards");
 
   $scope.addItem = function (nameInput){
     $scope.cards.$add(
