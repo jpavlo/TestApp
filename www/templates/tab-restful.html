@@ -1,8 +1,6 @@
 <ion-view view-title="RESTful">
   <ion-content class="padding">
-  <button class="button button-balanced button-block" ng-click="login();">
-    login
-  </button>
+  <button class="button button-full button-positive" ng-click="login()" ng-hide="{{id}}">Login with Facebook {{user}}</button>
 		<div class="list card" data-ng-repeat="image in imageList">
 
 		  <div class="item item-avatar">
