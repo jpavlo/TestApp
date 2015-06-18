@@ -1,4 +1,4 @@
-App.controller("SettingsController", function($scope, $localStorage, $timeout, $http, $location, $ionicModal, $timeout) {
+App.controller("SettingsController", function($scope, $localStorage, $timeout, $http, $location, $ionicModal, $timeout, $cordovaSQLite) {
   	
 	  $scope.status = $localStorage.status;
 
@@ -64,6 +64,42 @@ App.controller("SettingsController", function($scope, $localStorage, $timeout, $
 	        delete $localStorage.status;
 	        //alert('logout');
 	    };
+
+
+
+		  
+
+
+
+		  $scope.insert = function(name, email) {
+		    var query = "INSERT INTO profile (name, email) VALUES (?,?)";
+
+		    $cordovaSQLite.execute(db, query, [name, email]).then(function(res) {
+		      console.log("INSERT ID -> " + res.insertId);
+		    }, function (err) {
+		      console.log(err);
+		    });
+		  }
+
+
+
+
+		  $scope.select = function(email) {
+		    var query = "SELECT name, email FROM profile WHERE email = ?";
+
+		    $cordovaSQLite.execute(db, query, [email]).then(function(res) {
+		      if(res.rows.length > 0){
+		      	console.log("SELECTED -> " + res.rows.item(0).name + " " + res.rows.item(0).email);
+		      }else{
+		      	console.log("NO ROWS EXIST");
+		      }
+		    }, function (err) {
+		      console.log(err);
+		    });
+		  }
+
+
+
 
 
 });
