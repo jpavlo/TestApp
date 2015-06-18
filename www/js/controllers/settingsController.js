@@ -1,6 +1,6 @@
 App.controller("SettingsController", function($scope, $localStorage, $timeout, $http, $location, $ionicModal, $timeout) {
   	
-
+	  $scope.status = $localStorage.status;
 
 	  // Form data for the login modal
 	  $scope.loginData = {};
@@ -37,12 +37,13 @@ App.controller("SettingsController", function($scope, $localStorage, $timeout, $
 	  $scope.init = function(){
 
         if($localStorage.hasOwnProperty("accessToken") === true) {
-            $http.get("https://graph.facebook.com/v2.2/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,email", format: "json" }}).then(function(result) {
+            $http.get("https://graph.facebook.com/v2.3/me", { params: { access_token: $localStorage.accessToken, fields: "id,name,gender,location,website,picture,email", format: "json" }}).then(function(result) {
                 $scope.profileData = result.data;
                 $localStorage.email = $scope.profileData.email;
                 $localStorage.name = $scope.profileData.name;
                 $localStorage.picture = $scope.profileData.picture.data.url;
                 $localStorage.id = $scope.profileData.id;
+                $localStorage.status = true;
                 console.log("TAG success login " + JSON.stringify($scope.profileData));
             }, function(error) {
                 alert("There was a problem getting your profile." + error);
@@ -52,6 +53,17 @@ App.controller("SettingsController", function($scope, $localStorage, $timeout, $
               //$scope.login();
         }
 	  };
+
+
+		$scope.facebookLogout = function() {
+	        delete $localStorage.accessToken;
+	        delete $localStorage.name;
+	        delete $localStorage.picture;
+	        delete $localStorage.email;
+	        delete $localStorage.id;
+	        delete $localStorage.status;
+	        //alert('logout');
+	    };
 
 
 });

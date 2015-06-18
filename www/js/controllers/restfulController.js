@@ -1,6 +1,8 @@
 App.controller('RestfulController', function($scope, $state, $http, $q, $ionicModal, $timeout, $localStorage) { 
 
-    
+
+  $scope.status = $localStorage.status;
+  $scope.nombre = $localStorage.name;
 
   // Form data for the login modal
   $scope.loginData = {};
