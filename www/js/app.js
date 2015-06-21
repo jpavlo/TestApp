@@ -41,10 +41,10 @@ angular.module('starter', ['ionic',
     "senderID": "1078791502856",
   };
 
-  document.addEventListener("deviceready", function(){
+  document.addEventListener("deviceready", function($cordovaProgress){
 
   db = $cordovaSQLite.openDB( 'my' + '.db');
-  $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS profile (id integer primary key, name text, email text)");
+  $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS profile (id integer primary key, name text, email text, picture text, website text)");
 
     $cordovaPush.register(androidConfig).then(function(result) {
       // Success

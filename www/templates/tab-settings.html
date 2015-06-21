@@ -34,12 +34,33 @@
         <button class="button button-positive button-block" ng-click="facebookLogout()" ng-show="{{status}}">
           Facebook Logout
         </button>
-        <button class="button button-positive button-block" ng-click="insert('juan pablo','email@gmail.com')">
+        <button class="button button-positive button-block" ng-click="insert('juan pablo','{{modelo}}','sitio.com')">
           Insert
         </button>
-        <button class="button button-positive button-block" ng-click="select('email@gmail.com')">
-          Select
+
+
+
+        <button class="button button-positive button-block" ng-click="select(modelo)">
+          Select {{profile.name}} {{profile.email}}{{status}}
         </button>
+
+
+        <button class="button button-positive button-block" ng-click="delete(modelo)">
+          Delete
+        </button>
+        <div class="list list-inset">
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="text" placeholder="Search" ng-model="modelo" value="dfgdfg ">
+          </label>
+        </div>
+        <button class="button button-positive button-block" ng-click="update('email','juanpa@gmail.com',modelo)">
+          Update
+        </button>
+        <a class="item item-icon-left" href="#">
+            <i class="icon ion-email"></i>
+            {{item.id}}-{{item.email}}{{modelo}}
+          </a>
         </div>
 
     </ion-content>

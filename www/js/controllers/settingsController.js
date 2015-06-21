@@ -1,4 +1,4 @@
-App.controller("SettingsController", function($scope, $localStorage, $timeout, $http, $location, $ionicModal, $timeout, $cordovaSQLite) {
+App.controller("SettingsController", function($scope, $localStorage, $timeout, $http, $location, $ionicModal, $timeout, $cordovaSQLite, ManageSQlite) {
   	
 	  $scope.status = $localStorage.status;
 
@@ -65,41 +65,73 @@ App.controller("SettingsController", function($scope, $localStorage, $timeout, $
 	        //alert('logout');
 	    };
 
+    $scope.profile = {};
 
+		  $scope.select = function(id){
 
-		  
+		      $scope.profile = ManageSQlite.getAll(id);
+		      $scope.profile = ManageSQlite.getAll(id);
+		      $scope.modelo = '';
+		      $scope.modelo = '';
 
-
-
-		  $scope.insert = function(name, email) {
-		    var query = "INSERT INTO profile (name, email) VALUES (?,?)";
-
-		    $cordovaSQLite.execute(db, query, [name, email]).then(function(res) {
-		      console.log("INSERT ID -> " + res.insertId);
-		    }, function (err) {
-		      console.log(err);
-		    });
-		  }
+		  };
 
 
 
+		  // $scope.insert = function(name, email, website) {
+		  //   var query = "INSERT INTO profile (name, email, website) VALUES (?,?,?)";
 
-		  $scope.select = function(email) {
-		    var query = "SELECT name, email FROM profile WHERE email = ?";
-
-		    $cordovaSQLite.execute(db, query, [email]).then(function(res) {
-		      if(res.rows.length > 0){
-		      	console.log("SELECTED -> " + res.rows.item(0).name + " " + res.rows.item(0).email);
-		      }else{
-		      	console.log("NO ROWS EXIST");
-		      }
-		    }, function (err) {
-		      console.log(err);
-		    });
-		  }
+		  //   $cordovaSQLite.execute(db, query, [name, email, website]).then(function(res) {
+		  //     console.log("INSERT ID -> " + res.insertId);
+		  //   }, function (err) {
+		  //     console.log(err);
+		  //   });
+		  // }
 
 
 
+
+		  // $scope.select = function(id) {
+		  //   var query = "SELECT name, email FROM profile WHERE id = ?";
+
+		  //   $cordovaSQLite.execute(db, query, [id]).then(function(res) {
+		  //     if(res.rows.length > 0){
+		  //     	console.log("SELECTED -> " + res.rows.item(0).name + " " + res.rows.item(0).email) + "sql query: " + query;
+		  //     	$scope.profile = res.rows.item(0);
+		  //     	console.log("TAG: Result " + JSON.stringify(res));
+		  //     }else{
+		  //     	console.log("NO ROWS EXIST");
+		  //     }
+		  //   }, function (err) {
+		  //     console.log(err);
+		  //   });
+		  // }
+
+
+		  // $scope.delete = function(id) {
+		  //   var query = "DELETE FROM profile WHERE id = ?";
+
+		  //   $cordovaSQLite.execute(db, query, [id]).then(function(res) {
+		  //     	console.log("DELETED FROM -> " + res + "sql query: " + query);
+		  //     	console.log("TAG: Result " + JSON.stringify(res));
+		  //     	$scope.profile = {};
+		  //   }, function (err) { 
+		  //     console.log(err);
+		  //   });
+		  // }
+
+
+
+		  // $scope.update = function(field, value, keyid) {
+		  //   var query = "UPDATE profile SET "+field+" = ? WHERE ID = ?";
+
+		  //   $cordovaSQLite.execute(db, query, [value,keyid]).then(function(res) {
+		  //     	//console.log("UPDATE -> " + res + "sql query: " + query);
+		  //     	console.log("TAG: Result " + JSON.stringify(res));
+		  //   }, function (err) { 
+		  //     console.log(err);
+		  //   });
+		  // }
 
 
 });

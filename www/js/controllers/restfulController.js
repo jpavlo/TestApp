@@ -1,5 +1,16 @@
-App.controller('RestfulController', function($scope, $state, $http, $q, $ionicModal, $timeout, $localStorage) { 
+App.controller('RestfulController', function($scope, $state, $http, $q, $ionicModal, $timeout, $localStorage, $ionicLoading) { 
 
+  $scope.show = function() {
+    $ionicLoading.show({
+      template: 'Loading...'
+    });
+  };
+  $scope.hide = function(){
+    $ionicLoading.hide();
+  };
+
+
+  $scope.show();
 
   $scope.status = $localStorage.status;
   $scope.nombre = $localStorage.name;
@@ -62,6 +73,7 @@ App.controller('RestfulController', function($scope, $state, $http, $q, $ionicMo
       $http.jsonp('http://api.dribbble.com/shots/popular?callback=JSON_CALLBACK')
       .success(function(res){
         defer.resolve(res)
+        $scope.hide();
       })
       .error(function(status, err){
         defer.reject(status)
