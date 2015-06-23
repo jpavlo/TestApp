@@ -83,6 +83,7 @@ App.factory("ManageSQlite", function($cordovaSQLite){
           console.log(err);
            SQliteService.profile = {};
         });
+
         return SQliteService.profile;
       };
 

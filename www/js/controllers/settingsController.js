@@ -70,8 +70,6 @@ App.controller("SettingsController", function($scope, $localStorage, $timeout, $
 		  $scope.select = function(id){
 
 		      $scope.profile = ManageSQlite.getAll(id);
-		      $scope.profile = ManageSQlite.getAll(id);
-		      $scope.modelo = '';
 		      $scope.modelo = '';
 
 		  };
