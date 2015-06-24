@@ -15,9 +15,12 @@ App.controller("StreamController", function($scope, $timeout, Items, Comments) {
   };
 
 
+
+
   $scope.addComment = function (idCard, commentInput){
     $scope.comments.$add(
         {
+          sender: authData.uid,
           id: idCard,
           comment: commentInput,
           created_at: new Date().getTime()
@@ -27,4 +30,13 @@ App.controller("StreamController", function($scope, $timeout, Items, Comments) {
   };
 
 
+
+
+
+
 });
+
+
+
+
+

@@ -10,7 +10,7 @@ App.controller('RestfulController', function($scope, $state, $http, $q, $ionicMo
   };
 
 
-  $scope.show();
+  //$scope.show();
 
   $scope.status = $localStorage.status;
   $scope.nombre = $localStorage.name;

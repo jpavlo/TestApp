@@ -9,6 +9,11 @@ App.factory("Comments", function($firebaseArray) {
   return $firebaseArray(itemsRef);
 });
 
+App.factory("Auth", function($firebaseAuth) {
+  var usersRef = new Firebase("https://testsapp.firebaseIO.com/users");
+  return $firebaseAuth(usersRef);
+});
+
 
 App.factory("GetProfile", function($cordovaOauth, $http, $localStorage, $location) {
 
